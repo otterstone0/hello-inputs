@@ -30,6 +30,7 @@ interface StorageDevice {
 // Define the fueling equipment type
 interface FuelingEquipment {
   id: string;
+  name: string;
   location: 'Indoor' | 'Outdoor';
   dispensedAs: 'Liquid' | 'Gaseous';
   publicAccess: 'Public' | 'Nonpublic';
@@ -96,6 +97,7 @@ const Index = () => {
   const addFuelingEquipment = () => {
     const newEquipment: FuelingEquipment = {
       id: `equipment-${Date.now()}`,
+      name: `Fueling Equipment ${fuelingEquipments.length + 1}`,
       location: 'Outdoor',
       dispensedAs: 'Gaseous',
       publicAccess: 'Nonpublic',
@@ -183,21 +185,23 @@ const Index = () => {
                   <Separator />
                   
                   <div className="py-4">
-                    <Label htmlFor="undergroundType" className="text-base font-medium mb-1.5 block">
-                      Underground Hydrogen Features (New or Existing)
-                    </Label>
-                    <Select
-                      value={preferences.undergroundType}
-                      onValueChange={handleUndergroundChange}
-                    >
-                      <SelectTrigger id="undergroundType" className="w-full">
-                        <SelectValue placeholder="Select underground type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Some underground">Some underground</SelectItem>
-                        <SelectItem value="All above">All above</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Label htmlFor="undergroundType" className="text-base font-medium">
+                        Underground Hydrogen Features (New or Existing)
+                      </Label>
+                      <Select
+                        value={preferences.undergroundType}
+                        onValueChange={handleUndergroundChange}
+                      >
+                        <SelectTrigger id="undergroundType" className="w-auto min-w-[150px]">
+                          <SelectValue placeholder="Select underground type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Some underground">Some underground</SelectItem>
+                          <SelectItem value="All above">All above</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <p className="text-sm text-muted-foreground mt-1">Select if your facility has underground features</p>
                   </div>
                   
@@ -283,13 +287,13 @@ const Index = () => {
                             />
                           </div>
                           
-                          <div>
+                          <div className="flex items-center justify-between">
                             <Label htmlFor={`type-${device.id}`}>Type</Label>
                             <Select
                               value={device.type}
                               onValueChange={(value) => updateStorageDevice(device.id, 'type', value)}
                             >
-                              <SelectTrigger id={`type-${device.id}`} className="mt-1">
+                              <SelectTrigger id={`type-${device.id}`} className="w-auto min-w-[120px]">
                                 <SelectValue placeholder="Select type" />
                               </SelectTrigger>
                               <SelectContent>
@@ -299,13 +303,13 @@ const Index = () => {
                             </Select>
                           </div>
 
-                          <div>
+                          <div className="flex items-center justify-between">
                             <Label htmlFor={`location-${device.id}`}>In/outdoor</Label>
                             <Select
                               value={device.location}
                               onValueChange={(value) => updateStorageDevice(device.id, 'location', value)}
                             >
-                              <SelectTrigger id={`location-${device.id}`} className="mt-1">
+                              <SelectTrigger id={`location-${device.id}`} className="w-auto min-w-[120px]">
                                 <SelectValue placeholder="Select location" />
                               </SelectTrigger>
                               <SelectContent>
@@ -340,34 +344,34 @@ const Index = () => {
                             </div>
                           )}
                           
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`quantity-${device.id}`}>Quantity</Label>
                               <Input 
                                 id={`quantity-${device.id}`}
                                 value={device.quantity}
                                 onChange={(e) => updateStorageDevice(device.id, 'quantity', e.target.value)}
-                                className="mt-1"
+                                className="w-auto min-w-[150px]"
                               />
                             </div>
                             
-                            <div>
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`pressure-${device.id}`}>Max Operating Pressure (psig)</Label>
                               <Input 
                                 id={`pressure-${device.id}`}
                                 value={device.maxPressure}
                                 onChange={(e) => updateStorageDevice(device.id, 'maxPressure', e.target.value)}
-                                className="mt-1"
+                                className="w-auto min-w-[150px]"
                               />
                             </div>
                             
-                            <div>
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`diameter-${device.id}`}>Max pipe inner diameter (in)</Label>
                               <Input 
                                 id={`diameter-${device.id}`}
                                 value={device.maxDiameter}
                                 onChange={(e) => updateStorageDevice(device.id, 'maxDiameter', e.target.value)}
-                                className="mt-1"
+                                className="w-auto min-w-[150px]"
                               />
                             </div>
                           </div>
@@ -408,12 +412,22 @@ const Index = () => {
 
                           <div className="grid gap-4">
                             <div>
+                              <Label htmlFor={`name-${equipment.id}`}>Name</Label>
+                              <Input 
+                                id={`name-${equipment.id}`}
+                                value={equipment.name}
+                                onChange={(e) => updateFuelingEquipment(equipment.id, 'name', e.target.value)}
+                                className="mt-1"
+                              />
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`location-${equipment.id}`}>In/outdoor</Label>
                               <Select
                                 value={equipment.location}
                                 onValueChange={(value) => updateFuelingEquipment(equipment.id, 'location', value)}
                               >
-                                <SelectTrigger id={`location-${equipment.id}`} className="mt-1">
+                                <SelectTrigger id={`location-${equipment.id}`} className="w-auto min-w-[120px]">
                                   <SelectValue placeholder="Select location" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -423,13 +437,13 @@ const Index = () => {
                               </Select>
                             </div>
                             
-                            <div>
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`dispensed-${equipment.id}`}>Dispensed as</Label>
                               <Select
                                 value={equipment.dispensedAs}
                                 onValueChange={(value) => updateFuelingEquipment(equipment.id, 'dispensedAs', value)}
                               >
-                                <SelectTrigger id={`dispensed-${equipment.id}`} className="mt-1">
+                                <SelectTrigger id={`dispensed-${equipment.id}`} className="w-auto min-w-[120px]">
                                   <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -439,13 +453,13 @@ const Index = () => {
                               </Select>
                             </div>
                             
-                            <div>
+                            <div className="flex items-center justify-between">
                               <Label htmlFor={`access-${equipment.id}`}>Public Access</Label>
                               <Select
                                 value={equipment.publicAccess}
                                 onValueChange={(value) => updateFuelingEquipment(equipment.id, 'publicAccess', value)}
                               >
-                                <SelectTrigger id={`access-${equipment.id}`} className="mt-1">
+                                <SelectTrigger id={`access-${equipment.id}`} className="w-auto min-w-[120px]">
                                   <SelectValue placeholder="Select access type" />
                                 </SelectTrigger>
                                 <SelectContent>
