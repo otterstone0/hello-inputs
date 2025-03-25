@@ -11,13 +11,13 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   const [preferences, setPreferences] = useState({
-    electrolyzer: false,
-    renewableEnergy: true,
-    carbonCapture: false,
-    heatRecovery: true,
-    pressurizedStorage: false,
-    liquidStorage: true,
-    undergroundStorage: false,
+    mobileFeatures: false,
+    undergroundHydrogenFeatures: false,
+    fuelingCapacity: false,
+    fuelCells: false,
+    h2Production: false,
+    combustion: false,
+    specialAtmospheres: false,
     metalHydrideStorage: false,
   });
 
@@ -30,13 +30,13 @@ const Index = () => {
 
   const handleReset = () => {
     setPreferences({
-      electrolyzer: false,
-      renewableEnergy: true,
-      carbonCapture: false,
-      heatRecovery: true,
-      pressurizedStorage: false,
-      liquidStorage: true,
-      undergroundStorage: false,
+      mobileFeatures: false,
+      undergroundHydrogenFeatures: false,
+      fuelingCapacity: false,
+      fuelCells: false,
+      h2Production: false,
+      combustion: false,
+      specialAtmospheres: false,
       metalHydrideStorage: false,
     });
     toast.info("All inputs have been reset to default values");
@@ -83,35 +83,35 @@ const Index = () => {
                 </p>
                 <div className="space-y-2">
                   <ToggleInput
-                    id="electrolyzer"
-                    label="Electrolyzer System"
-                    description="Include an electrolyzer system in your facility"
-                    defaultValue={preferences.electrolyzer}
-                    onChange={(value) => handleToggleChange('electrolyzer', value)}
+                    id="mobileFeatures"
+                    label="Mobile Features"
+                    description="Include mobile features in your facility"
+                    defaultValue={preferences.mobileFeatures}
+                    onChange={(value) => handleToggleChange('mobileFeatures', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="renewableEnergy"
-                    label="Renewable Energy Source"
-                    description="Power your facility with renewable energy"
-                    defaultValue={preferences.renewableEnergy}
-                    onChange={(value) => handleToggleChange('renewableEnergy', value)}
+                    id="undergroundHydrogenFeatures"
+                    label="Underground Hydrogen Features (New or Existing)"
+                    description="Include underground hydrogen storage and distribution features"
+                    defaultValue={preferences.undergroundHydrogenFeatures}
+                    onChange={(value) => handleToggleChange('undergroundHydrogenFeatures', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="carbonCapture"
-                    label="Carbon Capture"
-                    description="Include carbon capture technology"
-                    defaultValue={preferences.carbonCapture}
-                    onChange={(value) => handleToggleChange('carbonCapture', value)}
+                    id="fuelingCapacity"
+                    label="Fueling Capacity (Chap 10, 11)"
+                    description="Include hydrogen fueling capabilities"
+                    defaultValue={preferences.fuelingCapacity}
+                    onChange={(value) => handleToggleChange('fuelingCapacity', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="heatRecovery"
-                    label="Heat Recovery System"
-                    description="Recover and utilize waste heat"
-                    defaultValue={preferences.heatRecovery}
-                    onChange={(value) => handleToggleChange('heatRecovery', value)}
+                    id="fuelCells"
+                    label="Fuel Cells (Chap 12)"
+                    description="Include fuel cell technologies"
+                    defaultValue={preferences.fuelCells}
+                    onChange={(value) => handleToggleChange('fuelCells', value)}
                   />
                 </div>
               </div>
@@ -124,27 +124,27 @@ const Index = () => {
                 <h2 className="text-xl font-semibold mb-4">Storage Devices</h2>
                 <div className="space-y-2">
                   <ToggleInput
-                    id="pressurizedStorage"
-                    label="Pressurized Storage Tanks"
-                    description="Store hydrogen in high-pressure tanks"
-                    defaultValue={preferences.pressurizedStorage}
-                    onChange={(value) => handleToggleChange('pressurizedStorage', value)}
+                    id="h2Production"
+                    label="H2 Production (Chap 13)"
+                    description="Include hydrogen production capabilities"
+                    defaultValue={preferences.h2Production}
+                    onChange={(value) => handleToggleChange('h2Production', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="liquidStorage"
-                    label="Liquid Hydrogen Storage"
-                    description="Store hydrogen in its liquid form at cryogenic temperatures"
-                    defaultValue={preferences.liquidStorage}
-                    onChange={(value) => handleToggleChange('liquidStorage', value)}
+                    id="combustion"
+                    label="Combustion (Chap 14)"
+                    description="Include hydrogen combustion systems"
+                    defaultValue={preferences.combustion}
+                    onChange={(value) => handleToggleChange('combustion', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="undergroundStorage"
-                    label="Underground Storage"
-                    description="Store hydrogen in underground caverns or depleted gas fields"
-                    defaultValue={preferences.undergroundStorage}
-                    onChange={(value) => handleToggleChange('undergroundStorage', value)}
+                    id="specialAtmospheres"
+                    label="Special Atmospheres (Chap 15)"
+                    description="Include systems for special hydrogen atmospheres"
+                    defaultValue={preferences.specialAtmospheres}
+                    onChange={(value) => handleToggleChange('specialAtmospheres', value)}
                   />
                   <Separator />
                   <ToggleInput
