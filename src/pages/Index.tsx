@@ -171,14 +171,12 @@ const Index = () => {
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Main Inputs</h2>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Does your facility have: (select all that apply)<br />
-                  If you are unsure, leave empty (defaults as true)
+                  Select all features that apply to facility
                 </p>
                 <div className="space-y-2">
                   <ToggleInput
                     id="mobileFeatures"
                     label="Mobile Features"
-                    description="Include mobile features in your facility"
                     defaultValue={preferences.mobileFeatures}
                     onChange={(value) => handleToggleChange('mobileFeatures', value)}
                   />
@@ -202,14 +200,12 @@ const Index = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">Select if your facility has underground features</p>
                   </div>
                   
                   <Separator />
                   <ToggleInput
                     id="fuelingCapacity"
                     label="Fueling Capacity (Chap 10, 11)"
-                    description="Include hydrogen fueling capabilities"
                     defaultValue={preferences.fuelingCapacity}
                     onChange={(value) => handleToggleChange('fuelingCapacity', value)}
                   />
@@ -217,7 +213,6 @@ const Index = () => {
                   <ToggleInput
                     id="fuelCells"
                     label="Fuel Cells (Chap 12)"
-                    description="Include fuel cell technologies"
                     defaultValue={preferences.fuelCells}
                     onChange={(value) => handleToggleChange('fuelCells', value)}
                   />
@@ -225,7 +220,6 @@ const Index = () => {
                   <ToggleInput
                     id="h2Production"
                     label="H2 Production (Chap 13)"
-                    description="Include hydrogen production capabilities"
                     defaultValue={preferences.h2Production}
                     onChange={(value) => handleToggleChange('h2Production', value)}
                   />
@@ -233,7 +227,6 @@ const Index = () => {
                   <ToggleInput
                     id="combustion"
                     label="Combustion (Chap 14)"
-                    description="Include hydrogen combustion systems"
                     defaultValue={preferences.combustion}
                     onChange={(value) => handleToggleChange('combustion', value)}
                   />
@@ -241,7 +234,6 @@ const Index = () => {
                   <ToggleInput
                     id="specialAtmospheres"
                     label="Special Atmospheres (Chap 15)"
-                    description="Include systems for special hydrogen atmospheres"
                     defaultValue={preferences.specialAtmospheres}
                     onChange={(value) => handleToggleChange('specialAtmospheres', value)}
                   />
@@ -249,7 +241,6 @@ const Index = () => {
                   <ToggleInput
                     id="metalHydrideStorage"
                     label="Metal Hydride Storage"
-                    description="Store hydrogen in solid-state metal hydride materials"
                     defaultValue={preferences.metalHydrideStorage}
                     onChange={(value) => handleToggleChange('metalHydrideStorage', value)}
                   />
@@ -347,16 +338,21 @@ const Index = () => {
                           <div className="space-y-4">
                             <div className="flex items-center justify-between">
                               <Label htmlFor={`quantity-${device.id}`}>Quantity</Label>
-                              <Input 
-                                id={`quantity-${device.id}`}
-                                value={device.quantity}
-                                onChange={(e) => updateStorageDevice(device.id, 'quantity', e.target.value)}
-                                className="w-auto min-w-[150px]"
-                              />
+                              <div className="flex items-center">
+                                <Input 
+                                  id={`quantity-${device.id}`}
+                                  value={device.quantity}
+                                  onChange={(e) => updateStorageDevice(device.id, 'quantity', e.target.value)}
+                                  className="w-auto min-w-[150px]"
+                                />
+                                <div className="ml-2 bg-muted px-2 py-1 rounded text-sm font-medium">
+                                  {device.type === 'Liquid' ? 'gal' : 'scf'}
+                                </div>
+                              </div>
                             </div>
                             
                             <div className="flex items-center justify-between">
-                              <Label htmlFor={`pressure-${device.id}`}>Max Operating Pressure (psig)</Label>
+                              <Label htmlFor={`pressure-${device.id}`}>Max operating pressure (psig)</Label>
                               <Input 
                                 id={`pressure-${device.id}`}
                                 value={device.maxPressure}
