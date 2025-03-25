@@ -77,6 +77,10 @@ const Index = () => {
             <Card className="overflow-hidden card-hover">
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Main Inputs</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Does your facility have: (select all that apply)<br />
+                  If you are unsure, leave empty (defaults as true)
+                </p>
                 <div className="space-y-2">
                   <ToggleInput
                     id="electrolyzer"
