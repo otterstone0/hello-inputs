@@ -8,57 +8,35 @@ This dashboard is configured to work with GitHub Pages for easy deployment and e
 1. Push your changes to GitHub
 2. Go to your repository settings
 3. Navigate to "Pages" section
-4. Select the branch you want to deploy (usually "main")
-5. Click "Save"
+4. Under "Build and deployment" section:
+   - Select "Deploy from a branch" as the Source
+   - Select your branch (usually "main" or "master")
+   - Choose "/(root)" as the folder
+   - Click "Save"
 
 GitHub will automatically build and deploy your site. After a few minutes, it will be available at:
 `https://[your-username].github.io/[repository-name]/`
 
-## How to Embed in Wix
+## Important Notes
 
-Once deployed to GitHub Pages, you can embed this dashboard in your Wix site:
+- The site is configured to use relative paths (using `base: './'` in vite.config.ts)
+- No additional configuration is needed for basic GitHub Pages deployment
+- If you're using a custom domain, you can configure it in the GitHub Pages settings
 
-1. In your Wix editor, add an HTML iframe element
-2. Set the source URL to your GitHub Pages URL
-3. Set appropriate width and height (recommend 100% width and at least 800px height)
+## Accessing Form Data
 
-### Example Wix Embed Code:
-
-```html
-<iframe 
-  src="https://[your-username].github.io/[repository-name]/" 
-  width="100%" 
-  height="800px" 
-  frameborder="0">
-</iframe>
-```
-
-## Accessing Form Data from Wix
-
-You can access the form data from your Wix site using JavaScript:
+This form is designed to be embedded and to share data with parent applications:
 
 ```javascript
-// Add this code to your Wix site's page code
-$w.onReady(function () {
-  // Get the iframe element
-  const iframe = $w('#html1'); // Replace with your iframe component ID
-  
-  // Function to get form data from the iframe
-  function getFormData() {
-    iframe.postMessage({ type: 'GET_FORM_DATA' });
+// Example code to get form data from your embedded app
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'FORM_DATA_RESPONSE') {
+    // Use the form data
+    console.log('Form data:', event.data.data);
   }
-  
-  // Listen for messages from the iframe
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'FORM_DATA_RESPONSE') {
-      // Use the form data
-      console.log('Form data:', event.data.data);
-    }
-  });
-  
-  // Example: Get form data when a button is clicked
-  $w('#button1').onClick(() => {
-    getFormData();
-  });
 });
+
+// Request the form data
+const iframe = document.getElementById('your-iframe-id');
+iframe.contentWindow.postMessage({ type: 'GET_FORM_DATA' }, '*');
 ```
