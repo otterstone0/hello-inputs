@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { saveFormDataForEmbed } from "@/utils/embedHelper";
 
 // Define the storage device type
 interface StorageDevice {
@@ -50,6 +50,16 @@ const Index = () => {
 
   const [storageDevices, setStorageDevices] = useState<StorageDevice[]>([]);
   const [fuelingEquipments, setFuelingEquipments] = useState<FuelingEquipment[]>([]);
+
+  // Add effect to save form data whenever it changes
+  useEffect(() => {
+    const formData = {
+      preferences,
+      storageDevices,
+      fuelingEquipments
+    };
+    saveFormDataForEmbed(formData);
+  }, [preferences, storageDevices, fuelingEquipments]);
 
   const handleToggleChange = (key: string, value: boolean) => {
     setPreferences(prev => ({
@@ -136,8 +146,14 @@ const Index = () => {
   };
 
   const handleSave = () => {
+    const formData = {
+      preferences,
+      storageDevices,
+      fuelingEquipments
+    };
+    saveFormDataForEmbed(formData);
     toast.success("Your facility inputs have been saved successfully");
-    console.log("Saved facility inputs:", { preferences, storageDevices, fuelingEquipments });
+    console.log("Saved facility inputs:", formData);
   };
 
   const container = {

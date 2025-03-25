@@ -24,7 +24,7 @@ export const saveFormDataForEmbed = (data: unknown) => {
       window.parent.postMessage({
         type: 'FORM_DATA_RESPONSE',
         data
-      }, '*');
+      }, '*', undefined); // Fixed by adding undefined as the third parameter
     } catch (e) {
       console.error('Failed to send message to parent window:', e);
     }
@@ -43,10 +43,12 @@ export const setupMessageListener = (getFormData: () => unknown) => {
       
       // Send the data back to the parent window
       try {
-        event.source?.postMessage({
-          type: 'FORM_DATA_RESPONSE',
-          data
-        }, '*');
+        if (event.source && 'postMessage' in event.source) {
+          (event.source as Window).postMessage({
+            type: 'FORM_DATA_RESPONSE',
+            data
+          }, '*', undefined); // Fixed by adding undefined as the third parameter
+        }
       } catch (e) {
         console.error('Failed to send response to parent window:', e);
       }

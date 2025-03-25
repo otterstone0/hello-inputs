@@ -2,7 +2,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import { useEffect } from "react";
-import { setupMessageListener } from "./utils/embedHelper";
+import { setupMessageListener, saveFormDataForEmbed } from "./utils/embedHelper";
 
 const queryClient = new QueryClient();
 
