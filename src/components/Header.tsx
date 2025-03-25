@@ -28,7 +28,7 @@ const Header = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Customize your experience with these simple toggles
+            Input your hydrogen facility features
           </motion.p>
         </div>
       </div>
