@@ -12,15 +12,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Define the storage device type
 interface StorageDevice {
   id: string;
   name: string;
   type: 'Liquid' | 'Gaseous';
+  location: 'Indoor' | 'Outdoor';
+  sprinklers?: boolean;
+  exhaustedEnclosure?: boolean;
   quantity: string;
   maxPressure: string;
   maxDiameter: string;
+}
+
+// Define the fueling equipment type
+interface FuelingEquipment {
+  id: string;
+  location: 'Indoor' | 'Outdoor';
+  dispensedAs: 'Liquid' | 'Gaseous';
+  publicAccess: 'Public' | 'Nonpublic';
 }
 
 const Index = () => {
@@ -36,6 +48,7 @@ const Index = () => {
   });
 
   const [storageDevices, setStorageDevices] = useState<StorageDevice[]>([]);
+  const [fuelingEquipments, setFuelingEquipments] = useState<FuelingEquipment[]>([]);
 
   const handleToggleChange = (key: string, value: boolean) => {
     setPreferences(prev => ({
@@ -56,6 +69,9 @@ const Index = () => {
       id: `device-${Date.now()}`,
       name: `Storage Device ${storageDevices.length + 1}`,
       type: 'Gaseous',
+      location: 'Outdoor',
+      sprinklers: false,
+      exhaustedEnclosure: false,
       quantity: '',
       maxPressure: '',
       maxDiameter: '',
@@ -64,7 +80,7 @@ const Index = () => {
     toast.success("Storage device added");
   };
 
-  const updateStorageDevice = (id: string, field: keyof StorageDevice, value: string) => {
+  const updateStorageDevice = (id: string, field: keyof StorageDevice, value: any) => {
     setStorageDevices(prev => 
       prev.map(device => 
         device.id === id ? { ...device, [field]: value } : device
@@ -75,6 +91,30 @@ const Index = () => {
   const removeStorageDevice = (id: string) => {
     setStorageDevices(prev => prev.filter(device => device.id !== id));
     toast.info("Storage device removed");
+  };
+
+  const addFuelingEquipment = () => {
+    const newEquipment: FuelingEquipment = {
+      id: `equipment-${Date.now()}`,
+      location: 'Outdoor',
+      dispensedAs: 'Gaseous',
+      publicAccess: 'Nonpublic',
+    };
+    setFuelingEquipments(prev => [...prev, newEquipment]);
+    toast.success("Fueling equipment added");
+  };
+
+  const updateFuelingEquipment = (id: string, field: keyof FuelingEquipment, value: any) => {
+    setFuelingEquipments(prev => 
+      prev.map(equipment => 
+        equipment.id === id ? { ...equipment, [field]: value } : equipment
+      )
+    );
+  };
+
+  const removeFuelingEquipment = (id: string) => {
+    setFuelingEquipments(prev => prev.filter(equipment => equipment.id !== id));
+    toast.info("Fueling equipment removed");
   };
 
   const handleReset = () => {
@@ -89,12 +129,13 @@ const Index = () => {
       metalHydrideStorage: false,
     });
     setStorageDevices([]);
+    setFuelingEquipments([]);
     toast.info("All inputs have been reset to default values");
   };
 
   const handleSave = () => {
     toast.success("Your facility inputs have been saved successfully");
-    console.log("Saved facility inputs:", { preferences, storageDevices });
+    console.log("Saved facility inputs:", { preferences, storageDevices, fuelingEquipments });
   };
 
   const container = {
@@ -257,6 +298,47 @@ const Index = () => {
                               </SelectContent>
                             </Select>
                           </div>
+
+                          <div>
+                            <Label htmlFor={`location-${device.id}`}>In/outdoor</Label>
+                            <Select
+                              value={device.location}
+                              onValueChange={(value) => updateStorageDevice(device.id, 'location', value)}
+                            >
+                              <SelectTrigger id={`location-${device.id}`} className="mt-1">
+                                <SelectValue placeholder="Select location" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Indoor">Indoor</SelectItem>
+                                <SelectItem value="Outdoor">Outdoor</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {device.location === 'Indoor' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`sprinklers-${device.id}`} 
+                                  checked={device.sprinklers}
+                                  onCheckedChange={(checked) => 
+                                    updateStorageDevice(device.id, 'sprinklers', checked === true)
+                                  }
+                                />
+                                <Label htmlFor={`sprinklers-${device.id}`}>Sprinklers</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`exhausted-${device.id}`} 
+                                  checked={device.exhaustedEnclosure}
+                                  onCheckedChange={(checked) => 
+                                    updateStorageDevice(device.id, 'exhaustedEnclosure', checked === true)
+                                  }
+                                />
+                                <Label htmlFor={`exhausted-${device.id}`}>Exhausted Enclosure</Label>
+                              </div>
+                            </div>
+                          )}
                           
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -305,6 +387,90 @@ const Index = () => {
             </Card>
           </motion.div>
 
+          {preferences.fuelingCapacity && (
+            <motion.div variants={item}>
+              <Card className="overflow-hidden card-hover">
+                <div className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">Fueling Equipment</h2>
+                  
+                  {fuelingEquipments.length > 0 && (
+                    <div className="space-y-6 mb-6">
+                      {fuelingEquipments.map((equipment) => (
+                        <div key={equipment.id} className="border rounded-lg p-4 relative">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="absolute top-2 right-2 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                            onClick={() => removeFuelingEquipment(equipment.id)}
+                          >
+                            <Trash2 size={18} />
+                          </Button>
+
+                          <div className="grid gap-4">
+                            <div>
+                              <Label htmlFor={`location-${equipment.id}`}>In/outdoor</Label>
+                              <Select
+                                value={equipment.location}
+                                onValueChange={(value) => updateFuelingEquipment(equipment.id, 'location', value)}
+                              >
+                                <SelectTrigger id={`location-${equipment.id}`} className="mt-1">
+                                  <SelectValue placeholder="Select location" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Indoor">Indoor</SelectItem>
+                                  <SelectItem value="Outdoor">Outdoor</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor={`dispensed-${equipment.id}`}>Dispensed as</Label>
+                              <Select
+                                value={equipment.dispensedAs}
+                                onValueChange={(value) => updateFuelingEquipment(equipment.id, 'dispensedAs', value)}
+                              >
+                                <SelectTrigger id={`dispensed-${equipment.id}`} className="mt-1">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Liquid">Liquid</SelectItem>
+                                  <SelectItem value="Gaseous">Gaseous</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor={`access-${equipment.id}`}>Public Access</Label>
+                              <Select
+                                value={equipment.publicAccess}
+                                onValueChange={(value) => updateFuelingEquipment(equipment.id, 'publicAccess', value)}
+                              >
+                                <SelectTrigger id={`access-${equipment.id}`} className="mt-1">
+                                  <SelectValue placeholder="Select access type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Public">Public</SelectItem>
+                                  <SelectItem value="Nonpublic">Nonpublic</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <Button 
+                    onClick={addFuelingEquipment}
+                    className="w-full transition-all duration-300"
+                  >
+                    Add Fueling Equipment
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
           <motion.div 
             variants={item}
             className="flex justify-between pt-4"
@@ -320,7 +486,7 @@ const Index = () => {
               onClick={handleSave}
               className="transition-all duration-300"
             >
-              Save Inputs
+              Submit Inputs
             </Button>
           </motion.div>
         </motion.div>
