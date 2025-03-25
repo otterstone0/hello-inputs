@@ -19,7 +19,7 @@ const Header = () => {
             className="inline-block"
           >
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              Preferences
+              Preference1s
             </h1>
           </motion.div>
           <motion.p 
