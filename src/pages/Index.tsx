@@ -11,14 +11,14 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   const [preferences, setPreferences] = useState({
-    notifications: false,
-    darkMode: false,
-    analytics: true,
-    autoUpdates: true,
-    soundEffects: false,
-    highContrast: false,
-    dataSync: true,
-    locationServices: false,
+    electrolyzer: false,
+    renewableEnergy: true,
+    carbonCapture: false,
+    heatRecovery: true,
+    pressurizedStorage: false,
+    liquidStorage: true,
+    undergroundStorage: false,
+    metalHydrideStorage: false,
   });
 
   const handleToggleChange = (key: string, value: boolean) => {
@@ -30,21 +30,21 @@ const Index = () => {
 
   const handleReset = () => {
     setPreferences({
-      notifications: false,
-      darkMode: false,
-      analytics: true,
-      autoUpdates: true,
-      soundEffects: false,
-      highContrast: false,
-      dataSync: true,
-      locationServices: false,
+      electrolyzer: false,
+      renewableEnergy: true,
+      carbonCapture: false,
+      heatRecovery: true,
+      pressurizedStorage: false,
+      liquidStorage: true,
+      undergroundStorage: false,
+      metalHydrideStorage: false,
     });
-    toast.info("All preferences have been reset to default values");
+    toast.info("All inputs have been reset to default values");
   };
 
   const handleSave = () => {
-    toast.success("Your preferences have been saved successfully");
-    console.log("Saved preferences:", preferences);
+    toast.success("Your facility inputs have been saved successfully");
+    console.log("Saved facility inputs:", preferences);
   };
 
   const container = {
@@ -76,22 +76,38 @@ const Index = () => {
           <motion.div variants={item}>
             <Card className="overflow-hidden card-hover">
               <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Notification Settings</h2>
+                <h2 className="text-xl font-semibold mb-4">Main Inputs</h2>
                 <div className="space-y-2">
                   <ToggleInput
-                    id="notifications"
-                    label="Enable Notifications"
-                    description="Receive important updates and alerts"
-                    defaultValue={preferences.notifications}
-                    onChange={(value) => handleToggleChange('notifications', value)}
+                    id="electrolyzer"
+                    label="Electrolyzer System"
+                    description="Include an electrolyzer system in your facility"
+                    defaultValue={preferences.electrolyzer}
+                    onChange={(value) => handleToggleChange('electrolyzer', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="soundEffects"
-                    label="Sound Effects"
-                    description="Play sounds for notifications and interactions"
-                    defaultValue={preferences.soundEffects}
-                    onChange={(value) => handleToggleChange('soundEffects', value)}
+                    id="renewableEnergy"
+                    label="Renewable Energy Source"
+                    description="Power your facility with renewable energy"
+                    defaultValue={preferences.renewableEnergy}
+                    onChange={(value) => handleToggleChange('renewableEnergy', value)}
+                  />
+                  <Separator />
+                  <ToggleInput
+                    id="carbonCapture"
+                    label="Carbon Capture"
+                    description="Include carbon capture technology"
+                    defaultValue={preferences.carbonCapture}
+                    onChange={(value) => handleToggleChange('carbonCapture', value)}
+                  />
+                  <Separator />
+                  <ToggleInput
+                    id="heatRecovery"
+                    label="Heat Recovery System"
+                    description="Recover and utilize waste heat"
+                    defaultValue={preferences.heatRecovery}
+                    onChange={(value) => handleToggleChange('heatRecovery', value)}
                   />
                 </div>
               </div>
@@ -101,72 +117,38 @@ const Index = () => {
           <motion.div variants={item}>
             <Card className="overflow-hidden card-hover">
               <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Appearance</h2>
+                <h2 className="text-xl font-semibold mb-4">Storage Devices</h2>
                 <div className="space-y-2">
                   <ToggleInput
-                    id="darkMode"
-                    label="Dark Mode"
-                    description="Switch to a darker color scheme"
-                    defaultValue={preferences.darkMode}
-                    onChange={(value) => handleToggleChange('darkMode', value)}
+                    id="pressurizedStorage"
+                    label="Pressurized Storage Tanks"
+                    description="Store hydrogen in high-pressure tanks"
+                    defaultValue={preferences.pressurizedStorage}
+                    onChange={(value) => handleToggleChange('pressurizedStorage', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="highContrast"
-                    label="High Contrast"
-                    description="Increase contrast for better visibility"
-                    defaultValue={preferences.highContrast}
-                    onChange={(value) => handleToggleChange('highContrast', value)}
-                  />
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={item}>
-            <Card className="overflow-hidden card-hover">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Privacy & Data</h2>
-                <div className="space-y-2">
-                  <ToggleInput
-                    id="analytics"
-                    label="Analytics"
-                    description="Help improve our service with anonymous usage data"
-                    defaultValue={preferences.analytics}
-                    onChange={(value) => handleToggleChange('analytics', value)}
+                    id="liquidStorage"
+                    label="Liquid Hydrogen Storage"
+                    description="Store hydrogen in its liquid form at cryogenic temperatures"
+                    defaultValue={preferences.liquidStorage}
+                    onChange={(value) => handleToggleChange('liquidStorage', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="locationServices"
-                    label="Location Services"
-                    description="Allow access to your location for relevant features"
-                    defaultValue={preferences.locationServices}
-                    onChange={(value) => handleToggleChange('locationServices', value)}
+                    id="undergroundStorage"
+                    label="Underground Storage"
+                    description="Store hydrogen in underground caverns or depleted gas fields"
+                    defaultValue={preferences.undergroundStorage}
+                    onChange={(value) => handleToggleChange('undergroundStorage', value)}
                   />
                   <Separator />
                   <ToggleInput
-                    id="dataSync"
-                    label="Data Synchronization"
-                    description="Sync your preferences across devices"
-                    defaultValue={preferences.dataSync}
-                    onChange={(value) => handleToggleChange('dataSync', value)}
-                  />
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={item}>
-            <Card className="overflow-hidden card-hover">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">System</h2>
-                <div className="space-y-2">
-                  <ToggleInput
-                    id="autoUpdates"
-                    label="Automatic Updates"
-                    description="Keep the application up to date automatically"
-                    defaultValue={preferences.autoUpdates}
-                    onChange={(value) => handleToggleChange('autoUpdates', value)}
+                    id="metalHydrideStorage"
+                    label="Metal Hydride Storage"
+                    description="Store hydrogen in solid-state metal hydride materials"
+                    defaultValue={preferences.metalHydrideStorage}
+                    onChange={(value) => handleToggleChange('metalHydrideStorage', value)}
                   />
                 </div>
               </div>
@@ -188,7 +170,7 @@ const Index = () => {
               onClick={handleSave}
               className="transition-all duration-300"
             >
-              Save Preferences
+              Save Inputs
             </Button>
           </motion.div>
         </motion.div>
