@@ -1,8 +1,6 @@
 
-// This file contains helper functions for embedded mode communication
-
 /**
- * Saves the current form data to a hidden element for access from the parent window
+ * Saves the form data to a hidden element and sends it to the parent window
  * @param data The form data to save
  */
 export const saveFormDataForEmbed = (data: unknown) => {
@@ -20,15 +18,38 @@ export const saveFormDataForEmbed = (data: unknown) => {
   // Set data as JSON string
   hiddenElement.textContent = JSON.stringify(data);
   
-  // Optionally notify parent window (Wix) that data has changed
+  // Send message to parent window
   if (window.parent !== window) {
     try {
       window.parent.postMessage({
-        type: 'HYDROGEN_FORM_DATA_UPDATED',
+        type: 'FORM_DATA_RESPONSE',
         data
       }, '*');
     } catch (e) {
       console.error('Failed to send message to parent window:', e);
     }
   }
+};
+
+/**
+ * Listen for messages from the parent window requesting form data
+ * @param getFormData Function that returns the current form data
+ */
+export const setupMessageListener = (getFormData: () => unknown) => {
+  window.addEventListener('message', (event) => {
+    // Check if the message is requesting form data
+    if (event.data && event.data.type === 'GET_FORM_DATA') {
+      const data = getFormData();
+      
+      // Send the data back to the parent window
+      try {
+        event.source?.postMessage({
+          type: 'FORM_DATA_RESPONSE',
+          data
+        }, '*');
+      } catch (e) {
+        console.error('Failed to send response to parent window:', e);
+      }
+    }
+  });
 };

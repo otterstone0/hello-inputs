@@ -3,17 +3,25 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Create window globals to allow Wix to access form data
+// Define the interface for our global object
+declare global {
+  interface Window {
+    HydrogenFormData: {
+      getFormData: () => string;
+    };
+  }
+}
+
+// Create window globals to allow external access to form data
 window.HydrogenFormData = {
   getFormData: () => {
-    // This function can be called from Wix to get the current form data
+    // This function can be called from external sites to get the current form data
     return document.getElementById('hydrogen-form-data')?.textContent || '{}';
   }
 };
 
-// Listen for messages from parent window (Wix)
+// Listen for messages from parent window
 window.addEventListener('message', (event) => {
-  // You can implement message handling here if needed
   console.log('Message received from parent:', event.data);
 });
 

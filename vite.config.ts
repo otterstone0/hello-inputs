@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  base: './', // Makes paths relative, required for GitHub Pages
   build: {
     // Optimize for embedding
     cssCodeSplit: false,
