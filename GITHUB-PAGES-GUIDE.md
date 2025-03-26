@@ -40,3 +40,21 @@ window.addEventListener('message', function(event) {
 const iframe = document.getElementById('your-iframe-id');
 iframe.contentWindow.postMessage({ type: 'GET_FORM_DATA' }, '*');
 ```
+
+## Accessing Form Submissions
+
+When users submit the form, a CSV file will automatically download containing all the form data. Additionally, form submissions are stored in localStorage and can be accessed programmatically:
+
+```javascript
+// If accessing directly from the page:
+const submissions = window.HydrogenFormData.getSubmissions();
+console.log('All submissions:', submissions);
+
+// If accessing from a parent window with an embedded iframe:
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'FORM_SUBMISSION') {
+    // A new submission has been made
+    console.log('New submission:', event.data.data);
+  }
+});
+```

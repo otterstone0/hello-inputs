@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveFormDataForEmbed } from "@/utils/embedHelper";
+import { saveSubmissionToFile } from '@/utils/submissionHelper';
 
 // Define the storage device type
 interface StorageDevice {
@@ -36,10 +37,24 @@ interface FuelingEquipment {
   publicAccess: 'Public' | 'Nonpublic';
 }
 
+// Define the preferences type
+interface Preferences {
+  approach: 'Prescriptive' | 'Performance' | 'Both (or unsure)';
+  mobileFeatures: boolean;
+  undergroundType: 'Some underground' | 'All above';
+  fuelingCapacity: boolean;
+  fuelCells: boolean;
+  h2Production: boolean;
+  combustion: boolean;
+  specialAtmospheres: boolean;
+  metalHydrideStorage: boolean;
+}
+
 const Index = () => {
-  const [preferences, setPreferences] = useState({
+  const [preferences, setPreferences] = useState<Preferences>({
+    approach: 'Prescriptive',
     mobileFeatures: false,
-    undergroundType: 'Some underground',
+    undergroundType: 'All above',
     fuelingCapacity: false,
     fuelCells: false,
     h2Production: false,
@@ -61,17 +76,24 @@ const Index = () => {
     saveFormDataForEmbed(formData);
   }, [preferences, storageDevices, fuelingEquipments]);
 
-  const handleToggleChange = (key: string, value: boolean) => {
+  const handleToggleChange = (key: keyof Preferences, value: boolean) => {
     setPreferences(prev => ({
       ...prev,
       [key]: value
     }));
   };
 
-  const handleUndergroundChange = (value: string) => {
+  const handleUndergroundChange = (value: 'Some underground' | 'All above') => {
     setPreferences(prev => ({
       ...prev,
       undergroundType: value
+    }));
+  };
+
+  const handleApproachChange = (value: 'Prescriptive' | 'Performance' | 'Both (or unsure)') => {
+    setPreferences(prev => ({
+      ...prev,
+      approach: value
     }));
   };
 
@@ -131,8 +153,9 @@ const Index = () => {
 
   const handleReset = () => {
     setPreferences({
+      approach: 'Prescriptive',
       mobileFeatures: false,
-      undergroundType: 'Some underground',
+      undergroundType: 'All above',
       fuelingCapacity: false,
       fuelCells: false,
       h2Production: false,
@@ -149,9 +172,11 @@ const Index = () => {
     const formData = {
       preferences,
       storageDevices,
-      fuelingEquipments
+      fuelingEquipments,
+      timestamp: new Date().toISOString(),
     };
     saveFormDataForEmbed(formData);
+    saveSubmissionToFile(formData);
     toast.success("Your facility inputs have been saved successfully");
     console.log("Saved facility inputs:", formData);
   };
@@ -190,6 +215,29 @@ const Index = () => {
                   Select all features that apply to facility
                 </p>
                 <div className="space-y-2">
+                  <div className="py-4">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Label htmlFor="approach" className="text-base font-medium">
+                        Approach
+                      </Label>
+                      <Select
+                        value={preferences.approach}
+                        onValueChange={handleApproachChange}
+                      >
+                        <SelectTrigger id="approach" className="w-auto min-w-[180px]">
+                          <SelectValue placeholder="Select approach" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Prescriptive">Prescriptive</SelectItem>
+                          <SelectItem value="Performance">Performance</SelectItem>
+                          <SelectItem value="Both (or unsure)">Both (or unsure)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
                   <ToggleInput
                     id="mobileFeatures"
                     label="Mobile Features"
