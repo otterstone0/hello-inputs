@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
@@ -152,6 +153,7 @@ const Index = () => {
   };
 
   const handleReset = () => {
+    // Reset all preferences to default values
     setPreferences({
       approach: 'Prescriptive',
       mobileFeatures: false,
@@ -163,20 +165,29 @@ const Index = () => {
       specialAtmospheres: false,
       metalHydrideStorage: false,
     });
+    
+    // Clear all storage devices and fueling equipment
     setStorageDevices([]);
     setFuelingEquipments([]);
+    
     toast.info("All inputs have been reset to default values");
   };
 
   const handleSave = () => {
+    // Create the form data object
     const formData = {
       preferences,
       storageDevices,
       fuelingEquipments,
       timestamp: new Date().toISOString(),
     };
+    
+    // Save form data for embedding
     saveFormDataForEmbed(formData);
+    
+    // Save submission to file (this triggers the CSV download)
     saveSubmissionToFile(formData);
+    
     toast.success("Your facility inputs have been saved successfully");
     console.log("Saved facility inputs:", formData);
   };
