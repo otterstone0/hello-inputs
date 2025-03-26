@@ -7,7 +7,8 @@ import './index.css'
 declare global {
   interface Window {
     HydrogenFormData: {
-      getFormData: () => string;
+      getFormData: () => unknown;
+      getSubmissions: () => unknown;
     };
   }
 }
@@ -16,7 +17,13 @@ declare global {
 window.HydrogenFormData = {
   getFormData: () => {
     // This function can be called from external sites to get the current form data
-    return document.getElementById('hydrogen-form-data')?.textContent || '{}';
+    return document.getElementById('hydrogen-form-data')?.textContent ? 
+      JSON.parse(document.getElementById('hydrogen-form-data')?.textContent || '{}') : 
+      {};
+  },
+  getSubmissions: () => {
+    // Return empty array as default, will be properly initialized in App.tsx
+    return [];
   }
 };
 
