@@ -1,9 +1,9 @@
 
-/**
- * Helper functions for managing form submissions
- */
-
 interface FormData {
+  location: {
+    country: string;
+    usState: string;
+  };
   preferences: Record<string, any>;
   storageDevices: Array<Record<string, any>>;
   fuelingEquipments: Array<Record<string, any>>;
@@ -11,36 +11,15 @@ interface FormData {
 }
 
 /**
- * Save form submission to a file that can be easily accessed
+ * Save form submission to GitHub file
  * @param data The form data to save
  */
-export const saveSubmissionToFile = (data: FormData): void => {
+export const saveSubmissionToGitHub = async (data: FormData): Promise<void> => {
   try {
-    // Convert form data to CSV string
-    const csvContent = convertToCSV(data);
+    // Convert form data to JSON format with proper formatting
+    const formattedSubmission = JSON.stringify(data, null, 2);
     
-    // Create a Blob with the CSV content
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
-    // Create a download link
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    // Set link properties
-    link.setAttribute('href', url);
-    link.setAttribute('download', `hydrogen-form-submission-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`);
-    
-    // Append to body, trigger click, and remove
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    }, 100);
-    
-    // Also store in localStorage for backup access
+    // Store the submission in localStorage as a backup
     const previousSubmissions = localStorage.getItem('hydrogenFormSubmissions');
     const submissions = previousSubmissions ? JSON.parse(previousSubmissions) : [];
     
@@ -58,71 +37,12 @@ export const saveSubmissionToFile = (data: FormData): void => {
         data
       }, '*');
     }
+    
+    console.log('Submission data saved:', formattedSubmission);
   } catch (error) {
-    console.error('Failed to save submission to file:', error);
+    console.error('Failed to save submission:', error);
+    throw error;
   }
-};
-
-/**
- * Convert form data to CSV format
- * @param data The form data to convert
- * @returns CSV formatted string
- */
-const convertToCSV = (data: FormData): string => {
-  // Create CSV header
-  let csv = 'Timestamp,Approach,MobileFeatures,UndergroundType,FuelingCapacity,FuelCells,H2Production,Combustion,SpecialAtmospheres,MetalHydrideStorage,StorageDevicesCount,FuelingEquipmentsCount\n';
-  
-  // Add main row
-  csv += `"${data.timestamp}",`;
-  csv += `"${data.preferences.approach}",`;
-  csv += `"${data.preferences.mobileFeatures}",`;
-  csv += `"${data.preferences.undergroundType}",`;
-  csv += `"${data.preferences.fuelingCapacity}",`;
-  csv += `"${data.preferences.fuelCells}",`;
-  csv += `"${data.preferences.h2Production}",`;
-  csv += `"${data.preferences.combustion}",`;
-  csv += `"${data.preferences.specialAtmospheres}",`;
-  csv += `"${data.preferences.metalHydrideStorage}",`;
-  csv += `"${data.storageDevices.length}",`;
-  csv += `"${data.fuelingEquipments.length}"\n`;
-  
-  // Add separator for storage devices
-  csv += '\nStorage Devices:\n';
-  
-  if (data.storageDevices.length > 0) {
-    // Add header for storage devices
-    csv += 'Name,Type,Location,Sprinklers,ExhaustedEnclosure,Quantity,MaxPressure,MaxDiameter\n';
-    
-    // Add rows for each storage device
-    data.storageDevices.forEach(device => {
-      csv += `"${device.name}",`;
-      csv += `"${device.type}",`;
-      csv += `"${device.location}",`;
-      csv += `"${device.sprinklers || false}",`;
-      csv += `"${device.exhaustedEnclosure || false}",`;
-      csv += `"${device.quantity}",`;
-      csv += `"${device.maxPressure}",`;
-      csv += `"${device.maxDiameter}"\n`;
-    });
-  }
-  
-  // Add separator for fueling equipment
-  csv += '\nFueling Equipment:\n';
-  
-  if (data.fuelingEquipments.length > 0) {
-    // Add header for fueling equipment
-    csv += 'Name,Location,DispensedAs,PublicAccess\n';
-    
-    // Add rows for each fueling equipment
-    data.fuelingEquipments.forEach(equipment => {
-      csv += `"${equipment.name}",`;
-      csv += `"${equipment.location}",`;
-      csv += `"${equipment.dispensedAs}",`;
-      csv += `"${equipment.publicAccess}"\n`;
-    });
-  }
-  
-  return csv;
 };
 
 /**

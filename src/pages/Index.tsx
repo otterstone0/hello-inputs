@@ -14,7 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveFormDataForEmbed } from "@/utils/embedHelper";
-import { saveSubmissionToFile } from '@/utils/submissionHelper';
+import { saveSubmissionToGitHub } from '@/utils/submissionHelper';
+import { countries } from '@/data/countries';
+import { usStates } from '@/data/usStates';
 
 // Define the storage device type
 interface StorageDevice {
@@ -51,7 +53,18 @@ interface Preferences {
   metalHydrideStorage: boolean;
 }
 
+// Define the location type
+interface Location {
+  country: string;
+  usState: string;
+}
+
 const Index = () => {
+  const [location, setLocation] = useState<Location>({
+    country: 'United States',
+    usState: 'California'
+  });
+
   const [preferences, setPreferences] = useState<Preferences>({
     approach: 'Prescriptive',
     mobileFeatures: false,
@@ -70,12 +83,29 @@ const Index = () => {
   // Add effect to save form data whenever it changes
   useEffect(() => {
     const formData = {
+      location,
       preferences,
       storageDevices,
       fuelingEquipments
     };
     saveFormDataForEmbed(formData);
-  }, [preferences, storageDevices, fuelingEquipments]);
+  }, [location, preferences, storageDevices, fuelingEquipments]);
+
+  const handleCountryChange = (value: string) => {
+    setLocation(prev => ({
+      ...prev,
+      country: value,
+      // Reset state if country is not US
+      usState: value === 'United States' ? prev.usState : ''
+    }));
+  };
+
+  const handleStateChange = (value: string) => {
+    setLocation(prev => ({
+      ...prev,
+      usState: value
+    }));
+  };
 
   const handleToggleChange = (key: keyof Preferences, value: boolean) => {
     setPreferences(prev => ({
@@ -153,6 +183,12 @@ const Index = () => {
   };
 
   const handleReset = () => {
+    // Reset location to default values
+    setLocation({
+      country: 'United States',
+      usState: 'California'
+    });
+    
     // Reset all preferences to default values
     setPreferences({
       approach: 'Prescriptive',
@@ -176,6 +212,7 @@ const Index = () => {
   const handleSave = () => {
     // Create the form data object
     const formData = {
+      location,
       preferences,
       storageDevices,
       fuelingEquipments,
@@ -185,8 +222,8 @@ const Index = () => {
     // Save form data for embedding
     saveFormDataForEmbed(formData);
     
-    // Save submission to file (this triggers the CSV download)
-    saveSubmissionToFile(formData);
+    // Save submission to GitHub file
+    saveSubmissionToGitHub(formData);
     
     toast.success("Your facility inputs have been saved successfully");
     console.log("Saved facility inputs:", formData);
@@ -218,6 +255,58 @@ const Index = () => {
           initial="hidden"
           animate="show"
         >
+          <motion.div variants={item}>
+            <Card className="overflow-hidden card-hover">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Location</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="country" className="text-base font-medium">
+                      Country
+                    </Label>
+                    <Select
+                      value={location.country}
+                      onValueChange={handleCountryChange}
+                    >
+                      <SelectTrigger id="country" className="w-auto min-w-[220px]">
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        {countries.map((country) => (
+                          <SelectItem key={country} value={country}>
+                            {country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="usState" className={`text-base font-medium ${location.country !== 'United States' ? 'text-gray-400' : ''}`}>
+                      US State
+                    </Label>
+                    <Select
+                      value={location.usState}
+                      onValueChange={handleStateChange}
+                      disabled={location.country !== 'United States'}
+                    >
+                      <SelectTrigger id="usState" className={`w-auto min-w-[220px] ${location.country !== 'United States' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        {usStates.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+          
           <motion.div variants={item}>
             <Card className="overflow-hidden card-hover">
               <div className="p-6">
